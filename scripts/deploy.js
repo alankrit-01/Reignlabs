@@ -16,41 +16,12 @@ async function main() {
   await onboardReignLabs.deployed();
 
   console.log(`OnboardReignLabs contracts deployed to ${onboardReignLabs.address}`);
-  // 0x96B7c3B7E5D80252FE76122824f525E7AA906A17
-  // await onboardReignLabs.connect(user3).buyBasic(user3.address,{value:'140000000000000000'});
-  // console.log(await onboardReignLabs.balanceOf(user2.address,0));
-  // console.log(await onboardReignLabs.balanceOf(user2.address,1));
-  // await onboardReignLabs.connect(user2).buyElite(user2.address,1,{value:'740000000000000000'});
-  // console.log(await onboardReignLabs.balanceOf(user2.address,0));
-  // console.log(await onboardReignLabs.balanceOf(user2.address,1));
-  // await onboardReignLabs.connect(user2).buyPro(user2.address,1,{value:'6660000000000000000'});
- 
-  // console.log(await onboardReignLabs.balanceOf(user2.address,2));
-  // console.log(await onboardReignLabs.balanceOf(user2.address,1));
 
-  // console.log(await onboardReignLabs.EliteFee());
-  // await onboardReignLabs.updatePassPrice(1,"111111111111111111");
-  // console.log(await onboardReignLabs.EliteFee());
-  // console.log(await onboardReignLabs.contractBalance());
-  // console.log(await ethers.provider.getBalance(user1.address));
-  // let a =await ethers.provider.getBalance(user1.address);
-  // let b =await ethers.provider.getBalance(user2.address);
-  // console.log(await ethers.provider.getBalance(user2.address));
   
-  
-  // await onboardReignLabs.withDrawEthers();
-  // console.log(await onboardReignLabs.contractBalance());
-  // console.log((await ethers.provider.getBalance(user1.address))-a);
-  // console.log((await ethers.provider.getBalance(user2.address))-b);
-  // console.log(await onboardReignLabs.getRevenueSplitAddresses());
-  // console.log(await onboardReignLabs.RevenueSplit(user1.address))
-  // console.log(await onboardReignLabs.RevenueSplit(user2.address))
-  // await onboardReignLabs.updateRevenueSplits(user2.address,400)
-  // await onboardReignLabs.updateRevenueSplits(user4.address,100)
-  // console.log(await onboardReignLabs.RevenueSplit(user1.address))
-  // console.log(await onboardReignLabs.RevenueSplit(user2.address))
-  // console.log(await onboardReignLabs.RevenueSplit(user4.address))
-  // console.log(await onboardReignLabs.getRevenueSplitAddresses());
+  await onboardReignLabs.buyTokenPass(user1.address,0,{value:"140000000000000000"});
+  await onboardReignLabs.buyTokenPass(user1.address,0,{value:"140000000000000000"});
+  await onboardReignLabs.connect(user1).safeTransferFrom(user1.address,user2.address,0,1,"0x00");
+  console.log(await onboardReignLabs.balanceOf(user1.address,0));
 }
 
 // We recommend this pattern to be able to use async/await everywhere

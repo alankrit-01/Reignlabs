@@ -21,7 +21,7 @@ abstract contract ERC1155Burnable is ERC1155 {
     }
 }
 
-contract OnboardReignLabs is ERC1155, Pausable, ERC1155Burnable {
+contract OnboardReignLabs is ERC1155, Pausable {
     uint public BasicFee;
     uint public EliteFee;
     uint public ProFee;
@@ -30,7 +30,7 @@ contract OnboardReignLabs is ERC1155, Pausable, ERC1155Burnable {
     address[] public Addresses;
 
     // Dont have the function to show all basic/pro holder.
-    // Burn only contract not holders.
+    // Can not be burned or transfered.
 
     constructor() ERC1155("") {
         Owners[msg.sender]=true;
@@ -61,61 +61,30 @@ contract OnboardReignLabs is ERC1155, Pausable, ERC1155Burnable {
         _unpause();
     }
 
-    function buyBasic(address _to) public payable{
-        require(balanceOf(_to,0)==0 && balanceOf(_to,1)==0 && balanceOf(_to,2)==0,"Account is already a pass holder");
-        require(msg.value>=BasicFee,"Insufficient fees provided");
-        _mint(_to, 0, 1, "0x00");
-    }
+    // _type =0 for basic 
+    // _type =1 for elite 
+    // _type =2 for pro
 
-    // existingPass =0 basic pass
-    // existingPass =1 No pass
-    function buyElite(address _to, uint existingPass) public payable{
-        require(existingPass==0 || existingPass ==1,"Invalid existingPass value 0/1");
-        require(balanceOf(_to,1)==0 ,"Account is already an elite pass holder");
-        require(balanceOf(_to,2)==0,"Account is already a pro pass holder");
-        if(existingPass==1){
-            require(balanceOf(_to,0)==0,"Account is already a basic pass holder");
+    function buyTokenPass(address _to, uint _type) public payable{
+        require(_type==0 || _type==1 || _type==2 ,"Invalid _type argument");
+        if(_type==0){
+            require(msg.value>=BasicFee,"Insufficient fees provided");
+            _mint(_to, 0, 1, "0x00");
+        }else if(_type==1){
             require(msg.value>=EliteFee,"Insufficient fees provided");
             _mint(_to, 1, 1, "0x00");
-        }else if(existingPass==0){
-            require(balanceOf(_to,0)!=0,"Account is not a basic pass holder");
-            require(msg.value >=(EliteFee-BasicFee),"Insufficient fees provided");
-            // burn(_to,0,1);
-            _burn(_to, 0, 1);
-            _mint(_to, 1, 1, "0x00");
-        }
-    }   
-
-    // existingPass =0 basic pass
-    // existingPass =1 elite pass
-    // existingPass =2 No pass
-    function buyPro(address _to, uint existingPass) public payable{
-        require(existingPass==0 || existingPass ==1 || existingPass ==2 ,"Invalid existingPass value 0/1/2");
-        require(balanceOf(_to,2)==0,"Account is already a pro pass holder");
-        if(existingPass==2){
-            require(balanceOf(_to,0)==0,"Account is already a basic pass holder");
-            require(balanceOf(_to,1)==0,"Account is already a elite pass holder");
+        }else if(_type==2){
             require(msg.value>=ProFee,"Insufficient fees provided");
-            _mint(_to, 2, 1, "0x00");
-        }else if(existingPass==1){
-            require(balanceOf(_to,1)!=0,"Account is not a elite pass holder");
-            require(msg.value >=(ProFee-EliteFee),"Insufficient fees provided");
-            _burn(_to, 1, 1);
-            _mint(_to, 2, 1, "0x00");
-        }else if(existingPass==0){
-            require(balanceOf(_to,0)!=0,"Account is not a basic pass holder");
-            require(msg.value >=(ProFee-BasicFee),"Insufficient fees provided");
-            _burn(_to, 0, 1);
             _mint(_to, 2, 1, "0x00");
         }
     }
-
 
     function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
         internal
         whenNotPaused
         override
     {
+        require(from==address(0),"Soul bound tokens can not be transferred");
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 
