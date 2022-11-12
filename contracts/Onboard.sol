@@ -21,7 +21,7 @@ abstract contract ERC1155Burnable is ERC1155 {
     }
 }
 
-contract OnboardReignLabs is ERC1155, Pausable {
+contract OnboardReignLabs1155 is ERC1155, Pausable {
     uint public BasicFee;
     uint public EliteFee;
     uint public ProFee;
@@ -31,13 +31,14 @@ contract OnboardReignLabs is ERC1155, Pausable {
 
     // Dont have the function to show all basic/pro holder.
     // Can not be burned or transfered.
+    // Lazy minint
 
     constructor() ERC1155("") {
         Owners[msg.sender]=true;
         Owners[0x80dCC025a1A8D821e87a310d57feD12A18C25F00]=true;
-        BasicFee=140000000000000000;
-        EliteFee=740000000000000000;
-        ProFee=7400000000000000000;
+        BasicFee=100000000000000;
+        EliteFee=200000000000000;
+        ProFee=300000000000000;
         RevenueSplit[msg.sender]=500;
         Addresses.push(msg.sender);
         RevenueSplit[0x80dCC025a1A8D821e87a310d57feD12A18C25F00]=500;
