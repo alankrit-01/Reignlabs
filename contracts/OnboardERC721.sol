@@ -57,11 +57,11 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
 
     function pause() public onlyOwner {
         _pause();
-    }
+    }   
 
     function unpause() public onlyOwner {
         _unpause();
-    }
+    }   
     
     // _type =0 for basic pass
     // _type =1 for elite pass
@@ -124,7 +124,7 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
     }   
     
     // _percentage =percentage*10   
-    // eg 60% -> 600    
+    // eg 60% -> 600        
     function updateRevenueSplits(address _address, uint256 _percentage) public onlyOwner {
         require(!(RevenueSplit[_address]==0 && _percentage==0),"Invalid operation");
         if(RevenueSplit[_address]==0){
