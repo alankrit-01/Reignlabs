@@ -18,13 +18,15 @@
                 this.chainId = chainId
                 this.signer = signer
             }
-            async createSignature(id,name) {
-                const obj = { id,name }
+            async createSignature(id, _type, _address) {
+                const obj = {id, _type, _address}
+                // console.log(obj);
                 const domain = await this._signingDomain()
                 const types = {
                     Struct: [
                         {name: "id", type: "uint256"}, 
-                        {name: "name", type: "string"}
+                        {name: "_type", type: "uint256"},
+                        {name: "_address", type: "address"}
                     ]
                 }
                 const signature = await this.signer._signTypedData(domain, types, obj)
@@ -43,15 +45,15 @@
                 }
                 return this._domain    
             }
-            static async getSign(contractAddress, chainId, tokenId,name) {
+            static async getSign(contractAddress, chainId, uniqueId, _type, address) {
                 var provider = new ethers.providers.Web3Provider(window.ethereum)
-                
                 await provider.send("eth_requestAccounts", []);
                 var signer = provider.getSigner()
                 await signer.getAddress()
                 
                 var lm = new SignHelper(contractAddress, chainId, signer)
-                var voucher = await lm.createSignature(tokenId,name)
+                // console.log(lm);
+                var voucher = await lm.createSignature(uniqueId, _type, address)
                 return voucher
             }
         }

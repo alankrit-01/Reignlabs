@@ -7,27 +7,21 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 
-// Talk about :
-// -two owners!
+// Talk about : 
+// -two owners!     
 // -timstap in signature
 // NUMBERS of giveaway
-// Givaway batch function   
+// Givaway batch function 
 
 contract OnboardReignLabs is ERC721,EIP712, Pausable {
     uint16 public basicId=1;
-    uint16 public basicCap=4500;
-    uint16 public basicGAId=4501;
-    uint16 public basicGACap=5000;
+    uint16 public basicCap=5000;
 
     uint16 public eliteId=5001;
-    uint16 public eliteCap=7700;
-    uint16 public eliteGAId=7701;
-    uint16 public eliteGACap=8000;
+    uint16 public eliteCap=8000;
 
     uint16 public proId=8001;
-    uint16 public proCap=9800;
-    uint16 public proGAId=9801;
-    uint16 public proGACap=10000;
+    uint16 public proCap=10000;
 
     uint public BasicFee; 
     uint public EliteFee;
@@ -38,12 +32,13 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
     mapping(uint256 =>bool) redeemed;
     mapping(address =>uint) public RevenueSplit;
     address[] public Addresses;
-    address[] public Owners;
-    string public baseURI = "https://blank.herokuapp.com/api/";
+    address public Owner1;
+    address public Owner2;
+    string public baseURI = "https://blank.herokuapp.com/api/"; 
 
     constructor() ERC721("OnboardReignLabs", "RLabs") EIP712(SIGNING_DOMAIN, SIGNATURE_VERSION) {
-        Owners.push(msg.sender);
-        Owners.push(0x80dCC025a1A8D821e87a310d57feD12A18C25F00);
+        Owner1= msg.sender;     
+        Owner2 =0x80dCC025a1A8D821e87a310d57feD12A18C25F00;     
         BasicFee=100000000000000;
         EliteFee=200000000000000;
         ProFee=300000000000000;
@@ -53,16 +48,11 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
         Addresses.push(0x80dCC025a1A8D821e87a310d57feD12A18C25F00);
     }
 
-    modifier onlyOwner(){
-        require(isOwner(msg.sender),"Only the owner can call this function");
-        _;
-    }
+    receive() external payable {} 
 
-    function isOwner(address _address) internal view returns(bool){
-        for(uint i=0; i< Owners.length; i++){
-            if(Owners[i]==_address) return true;
-        }
-        return false;
+    modifier onlyOwner(){
+        require(msg.sender==Owner1 || msg.sender==Owner2,"Only the owner can call this function");
+        _;
     }
 
     function pause() public onlyOwner {
@@ -72,12 +62,11 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
     function unpause() public onlyOwner {
         _unpause();
     }
-
     
     // _type =0 for basic pass
     // _type =1 for elite pass
     // _type =2 for pro pass
-    function buyTokenPass(address _to, uint _type) public payable{
+    function buyTokenPass(address _to, uint _type) public whenNotPaused payable{
         require(_type==0 || _type==1 || _type==2 ,"Invalid _type argument");
         if(_type==0){
             require(basicId<=basicCap,"Basic token cap reached");
@@ -95,30 +84,32 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
             _safeMint(_to, proId);
             proId++;
         }
-    }
+    }   
 
-    function giveAwayPass(uint256 id, uint256 _type, address to, bytes memory signature) public {
-        require(isOwner(check(id, _type, to, signature)), "Voucher invalid");
+    // Id is an unique identifier for a signature
+    // _type -> 0,1,2
+    // _address address to which NFT will be minted
+    // signature -> bytes data signed by the owner of the contract 
+    
+    function giveAwayPass(uint256 id, uint256 _type, address _address, bytes memory signature) whenNotPaused public {
         require(redeemed[id]!=true,"Already redeemed!");
+        require(_type==0 || _type==1 || _type==2 ,"Invalid _type argument");
+        address temp =check(id, _type, _address, signature);
+        require(temp == Owner1 || temp == Owner2, "Voucher invalid");
         if(_type==0){
-            require(basicGAId<=basicGACap,"Basic giveaway token cap reached");
-            _safeMint(to, basicGAId);
-            basicGAId++;
+            require(basicId<=basicCap,"Basic token cap reached");
+            _safeMint(_address, basicId);
+            basicId++;
         }else if(_type==1){
-            require(eliteGAId<=eliteGACap,"Elite giveaway token cap reached");
-            _safeMint(to, eliteGAId);
-            eliteGAId++;
+            require(eliteId<=eliteCap,"Elite token cap reached");
+            _safeMint(_address, eliteId);
+            eliteId++;
         }else if(_type==2){
-            require(proGAId<=proGACap,"Pro giveaway token cap reached");
-            _safeMint(to, proGAId);
-            proGAId++;
+            require(proId<=proCap,"Pro token cap reached");
+            _safeMint(_address, proId);
+            proId++;
         }
         redeemed[id]=true;
-    }
-
-    function _beforeTokenTransfer( address from, address to, uint256 tokenId ) internal override {
-        require(from ==address(0),"Soulbound tokens can not be transferred");
-        super._beforeTokenTransfer(from, to, tokenId);
     }
 
     // category =0 for basic fee
@@ -130,11 +121,10 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
         if(category==0) BasicFee=updatedPriceInWei;
         else if(category==1) EliteFee=updatedPriceInWei;
         else if(category==2) ProFee=updatedPriceInWei;
-    }
+    }   
     
     // _percentage =percentage*10   
     // eg 60% -> 600    
-
     function updateRevenueSplits(address _address, uint256 _percentage) public onlyOwner {
         require(!(RevenueSplit[_address]==0 && _percentage==0),"Invalid operation");
         if(RevenueSplit[_address]==0){
@@ -177,12 +167,12 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
         return ECDSA.recover(digest, signature);
     }
 
-    function _hash(uint256 id, uint256 _type, address to) internal view returns (bytes32) {
+    function _hash(uint256 id, uint256 _type, address _address) internal view returns (bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(   
-        keccak256( "Struct(uint256 id,uint256 _type,address to)"),
+        keccak256( "Struct(uint256 id,uint256 _type,address _address)"),
         id,
         _type,
-        to
+        _address
         )));
         // keccak256(bytes(name))
         // keccak256(bytes( STRING) ) for string
@@ -194,6 +184,11 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
 
     function updateBaseUri(string memory _newbaseURI) onlyOwner public {
         baseURI = _newbaseURI;
+    }
+
+    function _beforeTokenTransfer( address from, address to, uint256 tokenId ) internal override {
+        require(from ==address(0),"Soulbound tokens can not be transferred");
+        super._beforeTokenTransfer(from, to, tokenId);
     }
 }
 

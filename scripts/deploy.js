@@ -16,12 +16,16 @@ async function main() {
   await onboardReignLabs.deployed();
 
   console.log(`OnboardReignLabs contracts deployed to ${onboardReignLabs.address}`);
-  // MUMBAI -0x8d55B7E009A0E9c2645F33157CF521BA33cADebF 
   
-  // await onboardReignLabs.buyTokenPass(user1.address,0,{value:"140000000000000000"});
-  // await onboardReignLabs.buyTokenPass(user1.address,0,{value:"140000000000000000"});
-  // await onboardReignLabs.connect(user1).safeTransferFrom(user1.address,user2.address,0,1,"0x00");
-  // console.log(await onboardReignLabs.balanceOf(user1.address,0));
+  // await onboardReignLabs.connect(user1).pause();
+  
+  for(let i=0; i<5000; i++){
+    await onboardReignLabs.connect(user2).buyTokenPass(user2.address,0,{value:100000000000000});
+  }
+  console.log(await onboardReignLabs.balanceOf(user2.address))
+  await onboardReignLabs.connect(user2).buyTokenPass(user2.address,0,{value:100000000000000});
+  
+  console.log(await onboardReignLabs.balanceOf(user2.address))
 }
 
 // We recommend this pattern to be able to use async/await everywhere
