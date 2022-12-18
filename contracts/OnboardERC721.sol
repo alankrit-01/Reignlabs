@@ -14,23 +14,24 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 // Givaway batch function 
 
 contract OnboardReignLabs is ERC721,EIP712, Pausable {
+    
     uint16 public basicId=1;
     uint16 public basicCap=5000;
-
+     
     uint16 public eliteId=5001;
     uint16 public eliteCap=8000;
-
+    
     uint16 public proId=8001;
     uint16 public proCap=10000;
-
+    
     uint public BasicFee; 
     uint public EliteFee;
-    uint public ProFee;
+    uint public ProFee; 
     
     string private constant SIGNING_DOMAIN ="REIGNLABS";
     string private constant SIGNATURE_VERSION = "1"; 
-    mapping(uint256 =>bool) redeemed;
-    mapping(address =>uint) public RevenueSplit;
+    mapping(uint256 =>bool) redeemed;           
+    mapping(address =>uint) public RevenueSplit; 
     address[] public Addresses;
     address public Owner1;
     address public Owner2;
@@ -92,7 +93,7 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
     // signature -> bytes data signed by the owner of the contract 
     
     function giveAwayPass(uint256 id, uint256 _type, address _address, bytes memory signature) whenNotPaused public {
-        require(redeemed[id]!=true,"Already redeemed!");
+        require(redeemed[id]!=true,"Already redeemed!");    
         require(_type==0 || _type==1 || _type==2 ,"Invalid _type argument");
         address temp =check(id, _type, _address, signature);
         require(temp == Owner1 || temp == Owner2, "Voucher invalid");
@@ -141,10 +142,6 @@ contract OnboardReignLabs is ERC721,EIP712, Pausable {
         RevenueSplit[_address]=_percentage;
     } 
     
-    function getRevenueSplitAddresses() public view returns(address[] memory){
-        return Addresses;
-    }
-
     function contractBalance() public view returns (uint256) {
         return address(this).balance;
     }

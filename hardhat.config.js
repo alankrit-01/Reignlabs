@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomiclabs/hardhat-etherscan");
+// require("@nomiclabs/hardhat-waffle");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -16,13 +17,6 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545",
     },
-    rinkeby: {
-      url: "https://rinkeby.infura.io/v3/08d0a9d1045146dc888e62677f83e772", //Infura url with projectId
-      accounts: [
-        "08848e865c6f07e43abf9b6e4ce3dd7364e9d1be450d4d18ef2b558ab8f9b525",
-      ], // add the account that will deploy the contract (private key)
-      // ["ADMIN","ALANKRIT"]
-    },
     goerli: {
       url: "https://goerli.infura.io/v3/08d0a9d1045146dc888e62677f83e772", //Infura url with projectId
       accounts: [
@@ -30,11 +24,17 @@ module.exports = {
       ], // add the account that will deploy the contract (private key)
       // ["ADMIN","ALANKRIT"]
     },
+    matic: {
+      url: "https://rpc-mumbai.maticvigil.com",
+      accounts: ["fd87ebea96d89f8511d28ffd7bb772338d668bcd2a6762095aae7e69b75991ac"] // Alankrit private key
+    }
   },
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: "C7M9B1RX5QMQSQZ8W4UMZD6K5QS6DZAW9P",
+
+    // apiKey: "C7M9B1RX5QMQSQZ8W4UMZD6K5QS6DZAW9P",   // ethereum
+    apiKey: "634K4G2K7ASVPHQKBWSW31C7J21NBBR53T",      // polygon
   },
   mocha: {
     timeout: 100000000,

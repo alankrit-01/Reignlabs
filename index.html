@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>     
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
     <title>Document</title>
-</head>
-<body>
+</head>     
+<body>  
     <script type="text/javascript">
         // These constants must match the ones used in the smart contract.
-        const SIGNING_DOMAIN_NAME = "REIGNLABS"
+        const SIGNING_DOMAIN_NAME = "ASTRONAUTS"
         const SIGNING_DOMAIN_VERSION = "1"
         class SignHelper {
             constructor(contractAddress, chainId, signer) {
@@ -18,14 +18,15 @@
                 this.chainId = chainId
                 this.signer = signer
             }
-            async createSignature(id, _type, _address) {
-                const obj = {id, _type, _address}
+            async createSignature(id, _MaxtimeStamp, claimAmount, _address) {
+                const obj = {id, _MaxtimeStamp, claimAmount, _address}
                 // console.log(obj);
                 const domain = await this._signingDomain()
                 const types = {
                     Struct: [
                         {name: "id", type: "uint256"}, 
-                        {name: "_type", type: "uint256"},
+                        {name: "_MaxtimeStamp", type: "uint256"},
+                        {name: "claimAmount", type: "uint256"},
                         {name: "_address", type: "address"}
                     ]
                 }
@@ -45,7 +46,7 @@
                 }
                 return this._domain    
             }
-            static async getSign(contractAddress, chainId, uniqueId, _type, address) {
+            static async getSign(contractAddress, chainId, uniqueId, _MaxtimeStamp, claimAmount, address) {
                 var provider = new ethers.providers.Web3Provider(window.ethereum)
                 await provider.send("eth_requestAccounts", []);
                 var signer = provider.getSigner()
@@ -53,10 +54,16 @@
                 
                 var lm = new SignHelper(contractAddress, chainId, signer)
                 // console.log(lm);
-                var voucher = await lm.createSignature(uniqueId, _type, address)
+                var voucher = await lm.createSignature(uniqueId, _MaxtimeStamp, claimAmount, address);
                 return voucher
             }
         }
     </script>
 </body>
 </html>
+
+<!-- 
+
+    x =await SignHelper.getSign("0xF11d3169299D04900D6B2945102424fa5f016cAF",80001,0,11234,100,"0x80dCC025a1A8D821e87a310d57feD12A18C25F00");
+
+-->
