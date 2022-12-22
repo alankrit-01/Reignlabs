@@ -31,6 +31,8 @@ async function main() {
   console.log(`AstroNAUTS contracts deployed to ${astronauts.address}`);
 // 0x6A73666C85f2F955E2992E38E966Bf0f8775319d
 
+  // console.log(await astronauts.contractBalance())
+  
   // await astronauts.addValidator(user2.address)  
   // console.log(await astronauts.contractBalance())
   // await user1.sendTransaction({value:100,to:astronauts.address});
@@ -45,11 +47,31 @@ async function main() {
   // await astronauts.connect(user2).addValidator(user3.address)  
   // console.log(await astronauts.validator(user2.address));
   // console.log(await astronauts.validator(user3.address));
-
-
+  
+  
   // console.log(await astronauts.balanceOf(user2.address))
   // console.log(await astronauts.contractBalance())
+  // console.log(await ethers.provider.getBalance(user4.address))
   // await astronauts.connect(user2).MintInvestorNFTs(user2.address,3,{value:15000});
+  // await astronauts.connect(user3).MintInvestorNFTs(user3.address,2,{value:15000});
+  // await astronauts.connect(user2).MintInvestorNFTs(user2.address,2,{value:15000});
+  // console.log(await astronauts.contractBalance())
+  // console.log(await ethers.provider.getBalance(user4.address))
+  // console.log(await astronauts.balanceOf(user2.address))
+  // console.log(await astronauts.StakedNFT(user2.address,1))
+  // await astronauts.claimFreeInvestorNFTs()
+
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,0))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,1))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,2))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3))
+
+  // console.log(await astronauts.ownerOf(0))
+  // console.log(await astronauts.ownerOf(1))
+  // console.log(await astronauts.ownerOf(2))
+  // console.log(await astronauts.ownerOf(3))
+  // console.log(await astronauts.ownerOf(4))
+  // console.log(await astronauts.totalSupply())
 
   // console.log(await astronauts.balanceOf(user2.address))
   // console.log(await astronauts.contractBalance())
@@ -104,4 +126,6 @@ main().catch((error) => {
   process.exitCode = 1;
 });
 
-// npx hardhat verify --contract contracts/Crypto3d.test.sol:Crypto3dTest --network rinkeby 0xa0957418DA97756532Ae2aA553B68B316bbCDf9F 
+
+// npx hardhat --network matic run ./scripts/astronauts.deploy.js 
+// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0x6A73666C85f2F955E2992E38E966Bf0f8775319d

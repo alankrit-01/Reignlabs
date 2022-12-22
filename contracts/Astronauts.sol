@@ -39,8 +39,9 @@ contract ERC721Holder is IERC721Receiver {
 
 // ---------------------------------
 // IMPORTANT                        
-// 1- change in base ERC721 contract
-// 2- change in counter library     
+// 1- Change in base ERC721 contract
+// 2- Change in counter library     
+// 3- Reignlabs wallet to be replaced with the MultiSig wallet
 // --------------------------------- 
 
 interface NFTContract {    
@@ -55,6 +56,7 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     uint256 public DiscountedNFTprice;
     uint256 public NFTcap;      
     address public ReignLabsWallet;
+    address public MultiSigWallet;
     mapping(address=>bool) public validator;
     address public MooseSociety;
     address public AlphaHeard;   
@@ -62,7 +64,6 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     bool public discountPaused; 
     bool public claimPaused;    
     bool public contractPaused;  
-
 
     address[] public NFTProjects;               
                                                 
@@ -95,11 +96,14 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     uint256[] private _allTokens;
     mapping(uint256 => uint256) private _allTokensIndex;
 
-    constructor() ERC721("Astronauts", "ASTRO") EIP712(SIGNING_DOMAIN, SIGNATURE_VERSION){
+    constructor() ERC721("Astronauts", "ASTRO") EIP712(SIGNING_DOMAIN, SIGNATURE_VERSION)
+    payable
+    {
         MooseSociety=0xC0485b2005a6840180937A7cc6b89BBed2281b94; // Moose Society address
         AlphaHeard=0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb;   // Alpha Island address
                                                                                 
         ReignLabsWallet=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC;  // To transfer the funds from this wallet
+        MultiSigWallet=0x90F79bf6EB2c4f870365E785982E1f101E93b906;  // To transfer the funds from this wallet
                                                                                 
         validator[msg.sender]=true;         
         NFTprice =150;                
@@ -157,7 +161,7 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
             uint256 tokenIdlocal = _tokenIdCounter.current();
             _tokenIdCounter.increment();
             _safeMint(msg.sender, tokenIdlocal);
-        }
+        }   
     }   
 
     // Tested
@@ -166,6 +170,8 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         require(tokenId+amount<=NFTcap,"Maximum cap reached for asto-nauts NFTs");
         if(validator[msg.sender]==false){
             require(msg.value>=NFTprice*amount,"Please send sufficient amount of ethers");
+            (bool success, ) = (MultiSigWallet).call{value: msg.value}("");
+            require(success, "Failed to send ethers");
         }
         for(uint i=0; i<amount; i++){
             uint256 tokenIdlocal = _tokenIdCounter.current();
@@ -189,6 +195,10 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         }       
         require(isHolder==true,"Caller can't mint discounted NFTs");
         require(msg.value>= DiscountedNFTprice*amount ,"Please send sufficient amount of ethers");
+        
+        (bool success, ) = (MultiSigWallet).call{value: msg.value}("");
+        require(success, "Failed to send ethers");
+
         require(tokenId+amount<=NFTcap,"Maximum cap reached for asto-nauts NFTs");
         for(uint i=0; i<amount; i++){
             uint256 tokenIdlocal = _tokenIdCounter.current();
@@ -205,7 +215,7 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
             StakedNFT[msg.sender][tokenIDs[i]]=true;
             StakedNFTbyId[tokenIDs[i]]=StakedMetaData({owner:msg.sender,timeStamp:block.timestamp});
         }
-    }           
+    }    
 
     function unstakeInvestorNFT(uint[] memory tokenIDs) public whenNotPaused{     
         for(uint i=0; i<tokenIDs.length; i++){
@@ -276,12 +286,6 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         return address(this).balance;
     }  
 
-    // // Tested 
-    // function totalSupply() public view returns(uint256){
-    //     uint256 tokenId = _tokenIdCounter.current();
-    //     return tokenId;
-    // }
-
     function getTimeStamp() public view returns(uint256){
         return block.timestamp;
     }
@@ -322,7 +326,6 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         bytes32 digest =_hash(id,_MaxtimeStamp,claimAmount,_address);
         return ECDSA.recover(digest, signature);
     }
-
             
     function _hash(uint256 id, uint256 _MaxtimeStamp, uint256 claimAmount, address _address) internal view returns (bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(   
@@ -336,7 +339,6 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         // keccak256(bytes( STRING) ) for string
     }
 
-
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
         return interfaceId == type(IERC721Enumerable).interfaceId || super.supportsInterface(interfaceId);
     }
@@ -347,21 +349,15 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     }
 
     function totalSupply() public view virtual returns (uint256) {
-        return _allTokens.length;
+        return (_tokenIdCounter.current()-1);
     }
 
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 firstTokenId,
-        uint256 batchSize
-    ) internal virtual {
+        uint256 firstTokenId
+    ) internal override virtual {
         super._beforeTokenTransfer(from, to, firstTokenId);
-
-        if (batchSize > 1) {
-            // Will only trigger during construction. Batch transferring (minting) is not available afterwards.
-            revert("ERC721Enumerable: consecutive transfers not supported");
-        }
 
         uint256 tokenId = firstTokenId;
 
