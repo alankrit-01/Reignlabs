@@ -4,24 +4,32 @@ async function main() {
   // const provider = waffle.provider;
   const [user1,user2,user3,user4,user5] = await ethers.getSigners();
   
-  // const Test1 = await ethers.getContractFactory("Test1");
-  // const test1 = await Test1.connect(user2).deploy();
+  // const Test1 = await ethers.getContractFactory("MooseSociety");
+  // const test1 = await Test1.deploy();
   
   // await test1.deployed();
   // console.log(`Test1 contracts deployed to ${test1.address}`);
-  
-  // const Test2 = await ethers.getContractFactory("Test2");
-  // const test2 = await Test2.connect(user3).deploy();
+  // 0xC0485b2005a6840180937A7cc6b89BBed2281b94
+
+  // const Test2 = await ethers.getContractFactory("AlphaIsand");
+  // const test2 = await Test2.deploy();
   
   // await test2.deployed();
   // console.log(`Test2 contracts deployed to ${test2.address}`);
+  // 0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb
+
+  // const Test3 = await ethers.getContractFactory("GROUCHYTIGERS");
+  // const test3 = await Test3.deploy();
   
+  // await test3.deployed();
+  // console.log(`Test3 contracts deployed to ${test3.address}`);
+  // 0x6bf946A39701f8A2eb5F33e31F4D092eb8ed90D9
+
   const Astronauts = await ethers.getContractFactory("Astronauts");
-  // const astronauts = await Astronauts.deploy(test1.address,test2.address);
   const astronauts = await Astronauts.deploy();
-  // 0x47250308F5709bC1eDa507e56D081e54048A2271
   await astronauts.deployed();
   console.log(`AstroNAUTS contracts deployed to ${astronauts.address}`);
+// 0x6A73666C85f2F955E2992E38E966Bf0f8775319d
 
   // await astronauts.addValidator(user2.address)  
   // console.log(await astronauts.contractBalance())
