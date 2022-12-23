@@ -29,7 +29,7 @@ async function main() {
   const astronauts = await Astronauts.deploy();
   await astronauts.deployed();
   console.log(`AstroNAUTS contracts deployed to ${astronauts.address}`);
-// 0x6A73666C85f2F955E2992E38E966Bf0f8775319d
+  // 0xefd01290f32a48758820DA65b0dFAd7Bc281bbEC
 
   // console.log(await astronauts.contractBalance())
   
@@ -52,9 +52,11 @@ async function main() {
   // console.log(await astronauts.balanceOf(user2.address))
   // console.log(await astronauts.contractBalance())
   // console.log(await ethers.provider.getBalance(user4.address))
+  
   // await astronauts.connect(user2).MintInvestorNFTs(user2.address,3,{value:15000});
   // await astronauts.connect(user3).MintInvestorNFTs(user3.address,2,{value:15000});
   // await astronauts.connect(user2).MintInvestorNFTs(user2.address,2,{value:15000});
+
   // console.log(await astronauts.contractBalance())
   // console.log(await ethers.provider.getBalance(user4.address))
   // console.log(await astronauts.balanceOf(user2.address))
@@ -65,6 +67,30 @@ async function main() {
   // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,1))
   // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,2))
   // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,4)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,5))
+  
+  // await astronauts.connect(user2).stakeInvestorNFT([1,2,3]) 
+  // await astronauts.connect(user2).unstakeInvestorNFT([1,3]) 
+
+  // console.log(await astronauts.balanceOf(user2.address))
+  // await astronauts.connect(user2).transferFrom(user2.address,user1.address,2);
+  // console.log(await astronauts.balanceOf(user2.address))
+  
+  // console.log(await astronauts.StakedNFT(user2.address,1))
+  // console.log(await astronauts.StakedNFT(user2.address,2))
+  // console.log(await astronauts.StakedNFT(user2.address,3))
+  // console.log(await astronauts.StakedNFT(user2.address,6))
+  // console.log(await astronauts.StakedNFT(user2.address,7)) 
+  
+  
+  // console.log("--")
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,0))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,1))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,2))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,4))
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,5)) 
 
   // console.log(await astronauts.ownerOf(0))
   // console.log(await astronauts.ownerOf(1))
@@ -128,4 +154,4 @@ main().catch((error) => {
 
 
 // npx hardhat --network matic run ./scripts/astronauts.deploy.js 
-// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0x6A73666C85f2F955E2992E38E966Bf0f8775319d
+// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0xefd01290f32a48758820DA65b0dFAd7Bc281bbEC

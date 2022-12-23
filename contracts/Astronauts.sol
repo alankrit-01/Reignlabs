@@ -81,7 +81,7 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     // struct StakedMetaData{   
     //     address owner;       
     //     uint timeStamp;      
-    // }           
+    // }                         
 
     // multiple staking and multiple unstaking tokenId;
     // Listing of minted nft per wallet         
@@ -344,7 +344,10 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     }
 
     function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual returns (uint256) {
-        require(index < ERC721.balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+        // require(index < ERC721.balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+        if(_ownedTokens[owner][index]==0){
+            revert("ERC721Enumerable: owner index out of bounds");
+        }                                  
         return _ownedTokens[owner][index];
     }
 
@@ -358,19 +361,22 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         uint256 firstTokenId
     ) internal override virtual {
         super._beforeTokenTransfer(from, to, firstTokenId);
-
         uint256 tokenId = firstTokenId;
 
-        if (from == address(0)) {
-            _addTokenToAllTokensEnumeration(tokenId);
-        } else if (from != to) {
-            _removeTokenFromOwnerEnumeration(from, tokenId);
+        if(from !=address(this) && to!=address(this)){
+            if (from == address(0)) {
+                _addTokenToAllTokensEnumeration(tokenId);
+            } 
+            else if ((from != to)) {
+                _removeTokenFromOwnerEnumeration(from, tokenId);
+            }
+            if (to == address(0)) {
+                _removeTokenFromAllTokensEnumeration(tokenId);
+            } else if ((to != from)) {
+                _addTokenToOwnerEnumeration(to, tokenId);
+            }
         }
-        if (to == address(0)) {
-            _removeTokenFromAllTokensEnumeration(tokenId);
-        } else if (to != from) {
-            _addTokenToOwnerEnumeration(to, tokenId);
-        }
+
     }
 
     function _addTokenToOwnerEnumeration(address to, uint256 tokenId) private {
