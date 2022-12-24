@@ -26,7 +26,7 @@ module.exports = {
     },
     matic: {
       url: "https://rpc-mumbai.maticvigil.com",
-      accounts: ["fd87ebea96d89f8511d28ffd7bb772338d668bcd2a6762095aae7e69b75991ac"] // Alankrit private key
+      accounts: ["9ddfdc9f5611dae1fd7dd3874529480f54cd14d5e511e9c0dddc88c38fba69ce"] // Seller private key
     }
   },
   etherscan: {

@@ -27,7 +27,7 @@ async function main() {
 
   const Astronauts = await ethers.getContractFactory("Astronauts");
   const astronauts = await Astronauts.deploy();
-  await astronauts.deployed();
+  await astronauts.deployed();      
   console.log(`AstroNAUTS contracts deployed to ${astronauts.address}`);
   // 0xefd01290f32a48758820DA65b0dFAd7Bc281bbEC
 
@@ -53,24 +53,41 @@ async function main() {
   // console.log(await astronauts.contractBalance())
   // console.log(await ethers.provider.getBalance(user4.address))
   
-  // await astronauts.connect(user2).MintInvestorNFTs(user2.address,3,{value:15000});
+  // await astronauts.connect(user2).MintInvestorNFTs(user2.address,6,{value:15000});
   // await astronauts.connect(user3).MintInvestorNFTs(user3.address,2,{value:15000});
   // await astronauts.connect(user2).MintInvestorNFTs(user2.address,2,{value:15000});
-
+  
   // console.log(await astronauts.contractBalance())
   // console.log(await ethers.provider.getBalance(user4.address))
-  // console.log(await astronauts.balanceOf(user2.address))
+  // console.log("User 2 balance :",await astronauts.balanceOf(user2.address))
   // console.log(await astronauts.StakedNFT(user2.address,1))
-  // await astronauts.claimFreeInvestorNFTs()
-
-  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,0))
-  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,1))
-  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,2))
-  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3))
-  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,4)) 
-  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,5))
+  // await astronauts.claimFreeInvestorNFTs()   
   
-  // await astronauts.connect(user2).stakeInvestorNFT([1,2,3]) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,0)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,1)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,2)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,4)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,5))  
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,6))  
+  
+  // await astronauts.connect(user2).stakeInvestorNFT([1,2]) 
+  // await astronauts.connect(user2).MintInvestorNFTs(user2.address,1,{value:15000});
+  
+  // await astronauts.connect(user2).unstakeInvestorNFT([1]) 
+  // await astronauts.connect(user2).transferFrom(user2.address,user3.address,1);
+  // await astronauts.connect(user2).MintInvestorNFTs(user2.address,1,{value:15000});
+  // await astronauts.connect(user3).transferFrom(user3.address,user2.address,1);
+  // console.log("--")
+
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,0)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,1)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,2)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,4)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,5)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,6)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,7)) 
   // await astronauts.connect(user2).unstakeInvestorNFT([1,3]) 
 
   // console.log(await astronauts.balanceOf(user2.address))
@@ -91,13 +108,14 @@ async function main() {
   // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,3)) 
   // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,4))
   // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,5)) 
+  // console.log(await astronauts.tokenOfOwnerByIndex(user2.address,6)) 
 
   // console.log(await astronauts.ownerOf(0))
   // console.log(await astronauts.ownerOf(1))
   // console.log(await astronauts.ownerOf(2))
   // console.log(await astronauts.ownerOf(3))
   // console.log(await astronauts.ownerOf(4))
-  // console.log(await astronauts.totalSupply())
+  // console.log("Total Supply :",await astronauts.totalSupply())
 
   // console.log(await astronauts.balanceOf(user2.address))
   // console.log(await astronauts.contractBalance())
@@ -125,6 +143,7 @@ async function main() {
   //     break;
   //   }
   // }
+  
   // console.log(await astronauts.totalSupply());
   // await astronauts.connect(user3).MintInvestorNFTs(user3.address,1,{value:1000});
   // await astronauts.connect(user2).MintInvestorNFTs(user2.address,1,{value:1000});
@@ -154,4 +173,5 @@ main().catch((error) => {
 
 
 // npx hardhat --network matic run ./scripts/astronauts.deploy.js 
-// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0xefd01290f32a48758820DA65b0dFAd7Bc281bbEC
+// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0x1427c79c50d57d57C2d251eDD0B71E6e99c9e5A1
+

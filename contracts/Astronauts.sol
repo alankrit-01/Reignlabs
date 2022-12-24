@@ -44,25 +44,24 @@ contract ERC721Holder is IERC721Receiver {
 // 3- Reignlabs wallet to be replaced with the MultiSig wallet
 // --------------------------------- 
 
-interface NFTContract {    
+interface NFTContract {     
     function balanceOf(address owner) external view returns (uint256 balance);
-}   
+}                            
 
-contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
+contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
     using Counters for Counters.Counter;        
-
-    Counters.Counter private _tokenIdCounter;
-    uint256 public NFTprice;
-    uint256 public DiscountedNFTprice;
-    uint256 public NFTcap;      
-    address public ReignLabsWallet;
-    address public MultiSigWallet;
-    mapping(address=>bool) public validator;
-    address public MooseSociety;
-    address public AlphaHeard;   
-     
+        
+    Counters.Counter private _tokenIdCounter;   
+    uint256 public NFTprice;    
+    uint256 public DiscountedNFTprice;  
+    uint256 public NFTcap;          
+    address public ReignLabsWallet;     
+    address public MultiSigWallet;      
+    mapping(address=>bool) public validator;    
+    address public MooseSociety;    
+    address public AlphaHeard;      
+    
     bool public discountPaused; 
-    bool public claimPaused;    
     bool public contractPaused;  
 
     address[] public NFTProjects;               
@@ -72,11 +71,8 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     uint public constant MooseCap =100;         
     uint public constant AlphaCap =30;          
     uint public MooseCount;                     
-    uint public AlphaCount;                     
-                                                 
-    string private constant SIGNING_DOMAIN ="ASTRONAUTS";
-    string private constant SIGNATURE_VERSION = "1";    
-    mapping(uint256 =>bool) public redeemedIDs;  
+    uint public AlphaCount;                      
+    string public baseURI = "https://reignkit.reignlabs.io/api/nauts/"; 
 
     // struct StakedMetaData{   
     //     address owner;       
@@ -89,21 +85,20 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
 
     mapping(address => mapping(uint256 =>bool)) public StakedNFT;
     mapping(address => uint256) public claimedSoFar;
-    // mapping(uint=>StakedMetaData) public StakedNFTbyId;    
-    // uint dispersalCounter;
+    // mapping(uint=>StakedMetaData) public StakedNFTbyId; 
+    // uint dispersalCounter;                           
     mapping(address => mapping(uint256 => uint256)) private _ownedTokens;
     mapping(uint256 => uint256) private _ownedTokensIndex;
-    uint256[] private _allTokens;
+    uint256[] private _allTokens;                       
     mapping(uint256 => uint256) private _allTokensIndex;
 
-    constructor() ERC721("Astronauts", "ASTRO") EIP712(SIGNING_DOMAIN, SIGNATURE_VERSION)
+    constructor() ERC721("Astronauts", "ASTRO")
     payable
     {
         MooseSociety=0xC0485b2005a6840180937A7cc6b89BBed2281b94; // Moose Society address
         AlphaHeard=0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb;   // Alpha Island address
                                                                                 
-        ReignLabsWallet=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC;  // To transfer the funds from this wallet
-        MultiSigWallet=0x90F79bf6EB2c4f870365E785982E1f101E93b906;  // To transfer the funds from this wallet
+        MultiSigWallet=0x80dCC025a1A8D821e87a310d57feD12A18C25F00;  // To transfer the funds from this wallet
                                                                                 
         validator[msg.sender]=true;         
         NFTprice =150;                
@@ -144,7 +139,6 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
             claimedAlpha[msg.sender]=true;
             MooseCount++;
             AlphaCount+=2;
-
         }else if(claimedMoose[msg.sender]==false && NFTContract(MooseSociety).balanceOf(msg.sender)>0){
             amount=1;      
             claimedMoose[msg.sender]=true;
@@ -156,6 +150,8 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         }else{
             revert("Can't claim free Investors NFTs");
         }
+        // Won't mint if cap is after 2 mints and you have 3 claims
+        // If I calim and transfer my moose to some other address he can also claim and transfer me back.
         require(tokenId+amount<=NFTcap,"Maximum cap reached for asto-nauts NFTs");
         for(uint i=0; i<amount; i++){
             uint256 tokenIdlocal = _tokenIdCounter.current();
@@ -185,7 +181,7 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         require(discountPaused==false,"Discounted mint function is currently paused");
         require(amount<=50);
         bool isHolder;
-        uint256 tokenId = _tokenIdCounter.current();
+        uint256 tokenId = _tokenIdCounter.current(); 
         for(uint i=0; i<NFTProjects.length; i++){
             if(NFTProjects[i]== address(0)) continue;
             if(NFTContract(NFTProjects[i]).balanceOf(msg.sender)>0){
@@ -205,50 +201,26 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
             _tokenIdCounter.increment();
             _safeMint(to, tokenIdlocal);
         }
-    } 
+    }       
 
     function stakeInvestorNFT(uint[] memory tokenIDs) public whenNotPaused {
         for(uint i=0; i<tokenIDs.length; i++){
             require(StakedNFT[msg.sender][tokenIDs[i]]==false);
             require(ownerOf(tokenIDs[i])==msg.sender,"Not the Owner of this tokenID");
-            safeTransferFrom(msg.sender,address(this),tokenIDs[i]);
+            // safeTransferFrom(msg.sender,address(this),tokenIDs[i]);
             StakedNFT[msg.sender][tokenIDs[i]]=true;
             StakedNFTbyId[tokenIDs[i]]=StakedMetaData({owner:msg.sender,timeStamp:block.timestamp});
         }
-    }    
+    }       
 
     function unstakeInvestorNFT(uint[] memory tokenIDs) public whenNotPaused{     
         for(uint i=0; i<tokenIDs.length; i++){
             require(StakedNFT[msg.sender][tokenIDs[i]]==true,"TokenID not staked");     
-            safeTransferFrom(address(this),msg.sender,tokenIDs[i]);                     
+            // safeTransferFrom(address(this),msg.sender,tokenIDs[i]);                     
             StakedNFT[msg.sender][tokenIDs[i]]=false;                                   
             StakedNFTbyId[tokenIDs[i]]=StakedMetaData({owner:address(0),timeStamp:0});  
         }
-    }       
-
-    function claimInvestorRewards
-        (
-            uint256 uniqueID, 
-            uint _MaxtimeStamp, 
-            uint256 claimAmount, 
-            address _address, 
-            bytes memory signature
-        ) 
-            public payable whenNotPaused
-        {
-        // require(balanceOf(msg.sender)>0);
-        require(claimPaused==false,"Claim Investor rewards function is currently paused");
-
-        require(redeemedIDs[uniqueID]!=true,"Already redeemed!");
-        require(block.timestamp<=_MaxtimeStamp,"Time limit exceed to redeem this signature"); 
-        address temp =check(uniqueID,_MaxtimeStamp, claimAmount, _address, signature);  
-        require(validator[temp]==true,"Voucher invalid");
-        uint amount = claimAmount-claimedSoFar[msg.sender];
-        (bool success, ) = (msg.sender).call{value: amount}("");
-        require(success, "Failed to send ethers");
-        claimedSoFar[msg.sender]=claimAmount;
-        redeemedIDs[uniqueID]=true;
-    }
+    }     
 
     // Tested 
     function addValidator(address _address) public onlyValidator{
@@ -279,22 +251,22 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
     function removeValidator(address _address) public onlyValidator{
         require(validator[msg.sender]==true,"Not a validator");
         validator[_address]=false;
-    }
+    }               
 
     // Tested 
     function contractBalance() public view returns (uint256) {
         return address(this).balance;
-    }  
+    }       
 
     function getTimeStamp() public view returns(uint256){
         return block.timestamp;
-    }
+    }        
 
     // Tested 
     function withdrawEthers(uint amount) public onlyValidator {
-        (bool success, ) = (ReignLabsWallet).call{value: amount}("");
+        (bool success, ) = (MultiSigWallet).call{value: amount}("");
         require(success, "Failed to send ethers");
-    }
+    }          
 
     // Tested 
     function updtateNFTPice(bool discounted, uint price) public onlyValidator{
@@ -303,56 +275,39 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         }else{
             NFTprice=price;
         }
-    }
+    }   
 
     // Tested 
     function pauseUnpauseDiscountMint(bool pause) public onlyValidator{
         discountPaused=pause;
     }
 
-    function pauseUnpauseClaimInvestorRewards(bool pause) public onlyValidator{
-        claimPaused=pause;
-    }
-
     function pauseUnpauseContract(bool pause) public onlyValidator{
         contractPaused=pause;
     }
-
-    function check(uint256 id, uint256 _MaxtimeStamp, uint256 claimAmount, address _address, bytes memory signature) public view returns (address) {
-        return _verify(id,_MaxtimeStamp, claimAmount, _address, signature);
-    }
-
-    function _verify(uint256 id, uint256 _MaxtimeStamp, uint256 claimAmount, address _address, bytes memory signature) internal view returns (address) {
-        bytes32 digest =_hash(id,_MaxtimeStamp,claimAmount,_address);
-        return ECDSA.recover(digest, signature);
-    }
-            
-    function _hash(uint256 id, uint256 _MaxtimeStamp, uint256 claimAmount, address _address) internal view returns (bytes32) {
-        return _hashTypedDataV4(keccak256(abi.encode(   
-        keccak256( "Struct(uint256 id,uint256 _MaxtimeStamp,uint256 claimAmount,address _address)"),
-        id,
-        _MaxtimeStamp,
-        claimAmount,
-        _address
-        )));
-        // keccak256(bytes(name))
-        // keccak256(bytes( STRING) ) for string
-    }
-
+        
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
         return interfaceId == type(IERC721Enumerable).interfaceId || super.supportsInterface(interfaceId);
     }
 
     function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual returns (uint256) {
-        // require(index < ERC721.balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
-        if(_ownedTokens[owner][index]==0){
-            revert("ERC721Enumerable: owner index out of bounds");
-        }                                  
+        require(index < ERC721.balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+        // if(_ownedTokens[owner][index]==0){
+        //     revert("ERC721Enumerable: owner index out of bounds");
+        // }                                  
         return _ownedTokens[owner][index];
     }
 
     function totalSupply() public view virtual returns (uint256) {
         return (_tokenIdCounter.current()-1);
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
+    function updateBaseUri(string memory _newbaseURI) onlyValidator public {
+        baseURI = _newbaseURI;
     }
 
     function _beforeTokenTransfer(
@@ -361,20 +316,18 @@ contract Astronauts is ERC721, EIP712, IERC721Receiver,ERC721Holder{
         uint256 firstTokenId
     ) internal override virtual {
         super._beforeTokenTransfer(from, to, firstTokenId);
+        require(StakedNFT[msg.sender][firstTokenId]==false,"Staked NFTs are soulbounded");
         uint256 tokenId = firstTokenId;
-
-        if(from !=address(this) && to!=address(this)){
-            if (from == address(0)) {
-                _addTokenToAllTokensEnumeration(tokenId);
-            } 
-            else if ((from != to)) {
-                _removeTokenFromOwnerEnumeration(from, tokenId);
-            }
-            if (to == address(0)) {
-                _removeTokenFromAllTokensEnumeration(tokenId);
-            } else if ((to != from)) {
-                _addTokenToOwnerEnumeration(to, tokenId);
-            }
+        if (from == address(0)) {
+            _addTokenToAllTokensEnumeration(tokenId);
+        } 
+        else if ((from != to)) {
+            _removeTokenFromOwnerEnumeration(from, tokenId);
+        }
+        if (to == address(0)) {
+            _removeTokenFromAllTokensEnumeration(tokenId);
+        } else if ((to != from)) {
+            _addTokenToOwnerEnumeration(to, tokenId);
         }
 
     }
