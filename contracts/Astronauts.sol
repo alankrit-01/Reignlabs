@@ -3,27 +3,16 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";  
+import "@openzeppelin/contracts/utils/introspection/ERC165.sol";    
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";  
 
-
-// ---------------------------------
-// IMPORTANT                        
-// 0 -change the constructor.
-// 1- Change in base ERC721 contract
-// 2- Change in counter library     
-// 3- Reignlabs wallet to be replaced with the MultiSig wallet
-// 4- ERC721 base contract updated wont work on remix
-// ---------------------------------                    
 
 contract ERC721Holder is IERC721Receiver {
   function onERC721Received(address, address, uint256, bytes memory) public pure returns(bytes4){
     return this.onERC721Received.selector;
-  }
-}   
+  } 
+}    
 
 interface NFTContract {     
     function balanceOf(address owner) external view returns (uint256 balance);
@@ -32,9 +21,9 @@ interface NFTContract {
 contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
     using Counters for Counters.Counter;                            
         
-    Counters.Counter private _tokenIdCounter;   
-    uint256 public NFTprice;    // 
-    uint256 public DiscountedNFTprice;
+    Counters.Counter private _tokenIdCounter;              
+    uint256 public NFTprice;        
+    uint256 public DiscountedNFTprice;      
 
     uint32 public NFTcap;      
     uint32 public constant MooseCap =100;         
@@ -50,7 +39,7 @@ contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
     address public AlphaHeard;       
                                                 
     address[] public NFTProjects;               
-    uint256[] private _allTokens;                       
+    uint256[] private _allTokens;                   
     mapping(address=>bool) public validator;    
     mapping(address=>bool) public claimedMoose; 
     mapping(address=>bool) public claimedAlpha; 
@@ -68,19 +57,19 @@ contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
     // }                         
     // mapping(uint=>StakedMetaData) public StakedNFTbyId; 
                            
-    // constructor(address a,address b) ERC721("Astronauts", "ASTRO") payable{
     constructor() ERC721("Astronauts", "ASTRO") payable{
-        MooseSociety=0xC0485b2005a6840180937A7cc6b89BBed2281b94; // Moose Society address
-        AlphaHeard=0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb;   // Alpha Island address
+        MooseSociety=0xF63063bB20a03B85Bd08d5C1244AF8bA0aEE1B1F; // Moose Society address
+        AlphaHeard=0x24A913B00cbC8C3c747B19C7944E4dA26da1130b;   // Alpha Island address
                                                                                 
         MultiSigWallet=0x80dCC025a1A8D821e87a310d57feD12A18C25F00;  // To transfer the funds from this wallet
                                                                     
-        validator[msg.sender]=true;         
-        NFTprice =150;                
+        validator[msg.sender]=true;   
+        validator[0x03717989289c46a101A18b0A3e0Ca8DffB92a5a5] =true;      
+        NFTprice =82169269000000000;   // $100             
         DiscountedNFTprice =110;      
-        NFTcap=1970;                  
-        NFTProjects.push(0xC0485b2005a6840180937A7cc6b89BBed2281b94); // Moose Society address
-        NFTProjects.push(0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb); // Alpha Island address
+        NFTcap=1970;                    
+        NFTProjects.push(0xF63063bB20a03B85Bd08d5C1244AF8bA0aEE1B1F); // Moose Society address
+        NFTProjects.push(0x24A913B00cbC8C3c747B19C7944E4dA26da1130b); // Alpha Island address
         NFTProjects.push(0x6bf946A39701f8A2eb5F33e31F4D092eb8ed90D9); // Grouchy tigers     
     }                                    
 
@@ -260,10 +249,6 @@ contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
         return _ownedTokens[owner][index];
     }
 
-    // function totalSupply() public view virtual returns (uint256) {
-    //     return (_tokenIdCounter.current()-1);
-    // }   
-    
     function totalSupply() public view virtual returns (uint256) {
         return _allTokens.length;
     }

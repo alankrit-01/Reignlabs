@@ -4,19 +4,19 @@ async function main() {
   // const provider = waffle.provider;
   const [user1,user2,user3,user4,user5,user6,user7,user8,user9,user10] = await ethers.getSigners();
   
-  const Test1 = await ethers.getContractFactory("MooseSociety");
-  const test1 = await Test1.deploy();
+  // const Test1 = await ethers.getContractFactory("MooseSociety");
+  // const test1 = await Test1.deploy();
   
-  await test1.deployed();
-  console.log(`Test1 contracts deployed to ${test1.address}`);
-  // 0xC0485b2005a6840180937A7cc6b89BBed2281b94
+  // await test1.deployed();
+  // console.log(`Test1 contracts deployed to ${test1.address}`);
+  // // 0xC0485b2005a6840180937A7cc6b89BBed2281b94
 
-  const Test2 = await ethers.getContractFactory("AlphaIsand");
-  const test2 = await Test2.deploy();
+  // const Test2 = await ethers.getContractFactory("AlphaIsand");
+  // const test2 = await Test2.deploy();
   
-  await test2.deployed();
-  console.log(`Test2 contracts deployed to ${test2.address}`);
-  // 0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb
+  // await test2.deployed();
+  // console.log(`Test2 contracts deployed to ${test2.address}`);
+  // // 0x91133E3BB20a9183eED2c9cf8DaD28D2d268BACb
 
   // const Test3 = await ethers.getContractFactory("GROUCHYTIGERS");
   // const test3 = await Test3.deploy();
@@ -26,23 +26,24 @@ async function main() {
   // 0x6bf946A39701f8A2eb5F33e31F4D092eb8ed90D9
 
   const Astronauts = await ethers.getContractFactory("Astronauts");
-  const astronauts = await Astronauts.deploy(test1.address,test2.address);
+  const astronauts = await Astronauts.deploy();
+  // const astronauts = await Astronauts.deploy(test1.address,test2.address);
   await astronauts.deployed();      
   console.log(`AstroNAUTS contracts deployed to ${astronauts.address}`);
-  // 0xefd01290f32a48758820DA65b0dFAd7Bc281bbEC
+  // 0x77c6f11c4f04C1Fd9b84A76DfE42a4FE293cA6d1
 
-  await test1.safeMint(user2.address,1);
-  await test1.safeMint(user4.address,2);
-  await test1.safeMint(user5.address,3);
-  await test1.safeMint(user6.address,4);
-  await test1.safeMint(user7.address,5);
+  // await test1.safeMint(user2.address,1);
+  // await test1.safeMint(user4.address,2);
+  // await test1.safeMint(user5.address,3);
+  // await test1.safeMint(user6.address,4);
+  // await test1.safeMint(user7.address,5);
 
-  await test2.safeMint(user3.address,1);
-  await test2.safeMint(user3.address,3);
-  await test2.safeMint(user4.address,2);
-  await test2.safeMint(user5.address,4);
-  await test2.safeMint(user6.address,5);
-  await test2.safeMint(user7.address,6);
+  // await test2.safeMint(user3.address,1);
+  // await test2.safeMint(user3.address,3);
+  // await test2.safeMint(user4.address,2);
+  // await test2.safeMint(user5.address,4);
+  // await test2.safeMint(user6.address,5);
+  // await test2.safeMint(user7.address,6);
 
 
   // Add burnable function.
@@ -260,5 +261,5 @@ main().catch((error) => {
 
 
 // npx hardhat --network matic run ./scripts/astronauts.deploy.js 
-// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0x33299E27b7f7caB765d048fA9A1E8Dfeb499C550
+// npx hardhat verify --contract contracts/Astronauts.sol:Astronauts --network matic 0x77c6f11c4f04C1Fd9b84A76DfE42a4FE293cA6d1
 
