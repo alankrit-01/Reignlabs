@@ -1,11 +1,12 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomiclabs/hardhat-etherscan");
+require('hardhat-contract-sizer');
 // require("@nomiclabs/hardhat-waffle");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
-    version: "0.8.17",
+    version: "0.8.9",
     settings: {
       optimizer: {
         enabled: true,
@@ -27,6 +28,16 @@ module.exports = {
     matic: {
       url: "https://rpc-mumbai.maticvigil.com",
       accounts: ["08848e865c6f07e43abf9b6e4ce3dd7364e9d1be450d4d18ef2b558ab8f9b525"] // Seller private key
+    },
+    // mainnet:{
+    //   url :"https://mainnet.infura.io/v3/08d0a9d1045146dc888e62677f83e772",
+    //   accounts: ["08848e865c6f07e43abf9b6e4ce3dd7364e9d1be450d4d18ef2b558ab8f9b525"] // Seller private key
+    // },
+    forking: {
+      url :"https://eth-mainnet.g.alchemy.com/v2/1F-7GfjnbYxCbj8lY27FgdPHMmX2n3PC",
+      blockNumber: 16327329
+      // npx hardhat node --fork https://mainnet.infura.io/v3/08d0a9d1045146dc888e62677f83e772 --fork-block-number 16326526
+
     }
   },
   etherscan: {
@@ -34,7 +45,8 @@ module.exports = {
     // Obtain one at https://etherscan.io/
 
     // apiKey: "C7M9B1RX5QMQSQZ8W4UMZD6K5QS6DZAW9P",   // ethereum
-    apiKey: "634K4G2K7ASVPHQKBWSW31C7J21NBBR53T",      // polygon
+    apiKey: "YVJZ2UJIYTJD765S1Y94SCE1D6V3TDG3R5",   // ethereum mainnet
+    // apiKey: "634K4G2K7ASVPHQKBWSW31C7J21NBBR53T",      // polygon
   },
   mocha: {
     timeout: 100000000,
@@ -75,3 +87,7 @@ module.exports = {
 //     }
 //   },
 // }
+
+// npx hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/1F-7GfjnbYxCbj8lY27FgdPHMmX2n3PC --fork-block-number 16327329
+// npx hardhat node --fork https://mainnet.infura.io/v3/08d0a9d1045146dc888e62677f83e772 --fork-block-number 16326902
+// npx hardhat --network localhost run ./scripts/mainnet.fork.js 

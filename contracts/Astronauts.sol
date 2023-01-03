@@ -11,8 +11,8 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 contract ERC721Holder is IERC721Receiver {
   function onERC721Received(address, address, uint256, bytes memory) public pure returns(bytes4){
     return this.onERC721Received.selector;
-  } 
-}    
+  }     
+}        
 
 interface NFTContract {     
     function balanceOf(address owner) external view returns (uint256 balance);
@@ -22,12 +22,12 @@ contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
     using Counters for Counters.Counter;                            
         
     Counters.Counter private _tokenIdCounter;              
-    uint256 public NFTprice;        
-    uint256 public DiscountedNFTprice;      
+    uint256 public NFTprice;                
+    uint256 public DiscountedNFTprice;       
 
     uint32 public NFTcap;      
     uint32 public constant MooseCap =100;         
-    uint32 public constant AlphaCap =32;          
+    uint32 public constant AlphaCap =36;          
     uint32 public MooseCount;                     
     uint32 public AlphaCount;    
 
@@ -61,16 +61,16 @@ contract Astronauts is ERC721, IERC721Receiver,ERC721Holder{
         MooseSociety=0xF63063bB20a03B85Bd08d5C1244AF8bA0aEE1B1F; // Moose Society address
         AlphaHeard=0x24A913B00cbC8C3c747B19C7944E4dA26da1130b;   // Alpha Island address
                                                                                 
-        MultiSigWallet=0x80dCC025a1A8D821e87a310d57feD12A18C25F00;  // To transfer the funds from this wallet
-                                                                    
+        MultiSigWallet=0x8239674479128F857822b97aF113946E10DAA43c; 
+                                                                                                                              
         validator[msg.sender]=true;   
         validator[0x03717989289c46a101A18b0A3e0Ca8DffB92a5a5] =true;      
         NFTprice =82169269000000000;   // $100             
-        DiscountedNFTprice =110;      
+        DiscountedNFTprice =69843878000000000;  // $80   
         NFTcap=1970;                    
         NFTProjects.push(0xF63063bB20a03B85Bd08d5C1244AF8bA0aEE1B1F); // Moose Society address
         NFTProjects.push(0x24A913B00cbC8C3c747B19C7944E4dA26da1130b); // Alpha Island address
-        NFTProjects.push(0x6bf946A39701f8A2eb5F33e31F4D092eb8ed90D9); // Grouchy tigers     
+        NFTProjects.push(0xa50c349912739A4fe4e50BaFD3d8689210642D88); // Crypto punks     
     }                                    
 
     receive() external payable {}     

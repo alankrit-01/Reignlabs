@@ -75,49 +75,10 @@ async function main() {
   // await astronauts.connect(user6).burn(1)
   // console.log(await astronauts.totalSupply());
   // console.log(await astronauts.balanceOf(user6.address))
-
-
-  // await astronauts.connect(user6).stakeInvestorNFT([1,1])
-
-
   
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // await astronauts.connect(user6).stakeInvestorNFT([1,1])
 
 
 
